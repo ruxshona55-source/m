@@ -1,9 +1,10 @@
 from asyncio import tasks
 
+
 from accounts import serializers
 # from db.models import Model
 from rest_framework import status
-
+from  rest_framework.decorators import action
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from rest_framework.viewsets import ViewSet, ModelViewSet
@@ -67,6 +68,22 @@ class ProjectDetailTaskAPIView(APIView):
         serializers = TaskListSerializer(tasks, many=True)
         return Response(serializers.data)
 
+
+
+# class TaskAPIView(APIView):
+#     def get(self,request):
+#        tasks=Task.objects.all()
+#        serializers=TaskListSerializer(tasks,many=True)
+#        return Response(serializers.data)
+#
+#
+#     def post(self,request):
+#         serializers=TaskCreateAndUpdateSerializer(data=request.data)
+#         if serializers.is_valid():
+#             serializers.save()
+#             return Response(serializers.data,status=status.HTTP_201_CREATED)
+#         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+#
 #
 # class TaskApiView(APIView):
 #     def get(self,request):
@@ -109,33 +126,38 @@ class ProjectDetailTaskAPIView(APIView):
 #         tasks=Task.objects.all()
 #         serializers=TaskListSerializer(tasks,many=True)
 #         return Response(serializers.data)
+# tasklarni ro'yxat
 #
 #     def retrieve(self,request,pk=None):
 #         tasks=get_object_or_404(Task,pk=pk)
 #         serializers=TaskListSerializer(tasks)
 #         return Response(serializers.data)
+#  1idni batavsil malumoti
 #
 #     def create(self,request):
 #         serializers=TaskCreateAndUpdateSerializer(data=request.data)
 #         serializers.is_valid(raise_exception=True)
 #         serializers.save()
 #         return Response(serializers.data,status=status.HTTP_200_OK)
+#post yaratmoqchi bo'lsak
 #
 #     def update(self,request,pk=None):
 #         task=get_object_or_404(Task,pk=pk)
 #         serializers=TaskCreateAndUpdateSerializer(instance=task,data=request)
 #         serializers.is_valid()
 #         return Response(serializers.data,status=status.HTTP_200_OK)
+#o'zgartirish
 #
 #     def destroy(self,request,pk=None):
 #         task=get_object_or_404(Task,pk=None)
 #         task.delete()
 #         return Response({'message': 'Success'})
-
+# delett qilish
 
 
 class TaskModelViewSet(ModelViewSet):
     queryset = Task.objects.all()
+    # task model ichidagi hamma createlarni update qilamn
     serializer_class=TaskListSerializer
 
     def get_serializer_class(self):
@@ -144,7 +166,9 @@ class TaskModelViewSet(ModelViewSet):
         else:
             return TaskListSerializer
 
+    @action(detail=True, methods=['get'])
+    def project_tasks(self, request, pk=None):
+        tasks = Task.objects.filter(project_id=pk)
+        serializer = TaskListSerializer(tasks, many=True)
+        return Response(serializer.data)
 
-
-
-    

@@ -11,7 +11,7 @@ router.register('task',views.TaskModelViewSet,basename='task')
 urlpatterns = [
     path('projects/',views.ProjectApiView.as_view(),name='projects_list'),
     path('projects/<int:pk>/',views.ProjectApiView.as_view(),name='project_detail'),
-    path('projects/<int:pk>/tasks/list/',views.ProjectDetailTaskAPIView.as_view(),name='project_detail_tasks'),
+    path('projects/<int:pk>/task/list/',views.ProjectDetailTaskAPIView.as_view(),name='project_detail_tasks'),
     # path('tasks/',views.TaskApiView.as_view(),name='task_list'),
     # path('tasks/<int:pk>/',views.TaskDetailApiView.as_view(),name='task_detail')
 

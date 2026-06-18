@@ -22,7 +22,7 @@ class Project(models.Model):
 
 class Task(models.Model):
     objects = None
-    title = models.CharField(max_length=200)
+    name= models.CharField(max_length=200)
     description = models.TextField()
     status = models.CharField(
         choices=Status.choices,
