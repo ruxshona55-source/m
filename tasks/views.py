@@ -171,4 +171,10 @@ class TaskModelViewSet(ModelViewSet):
         tasks = Task.objects.filter(project_id=pk)
         serializer = TaskListSerializer(tasks, many=True)
         return Response(serializer.data)
+    @action(methods=['patch'],detail=True)
+    def change(self,request,pk=None):
+        task=get_object_or_404(Task,pk=pk)
+        serializer=TaskCreateAndUpdateSerializer(instance=task,data=request.data,partial=True)
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
