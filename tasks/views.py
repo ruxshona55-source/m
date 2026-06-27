@@ -1,9 +1,11 @@
 from asyncio import tasks
 
+from  django.contrib.postgres.search import TrigramSimilarity
 
 from accounts import serializers
+# from db.models import Q
 # from db.models import Model
-from rest_framework import status
+from rest_framework import status, filters
 from  rest_framework.decorators import action
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -13,7 +15,7 @@ from tasks.models import Project, Task
 from tasks.serializers import ProjectSerializer, TaskListSerializer, TaskCreateAndUpdateSerializer
 from tasks.serializers import ProjectCreateAndUpdateSerializer
 from rest_framework.response import Response
-
+import jwt, datetime
 
 
 class ProjectApiView(APIView):
@@ -159,6 +161,29 @@ class TaskModelViewSet(ModelViewSet):
     queryset = Task.objects.all()
     # task model ichidagi hamma createlarni update qilamn
     serializer_class=TaskListSerializer
+
+    # filter_backends = [
+    #     filters.SearchFilter
+    # ]
+    # search_fields=[
+    #     'name',
+    #     'description',
+    # ]
+
+
+    # def get_queryset(self):
+    #     # print(self.request.query_params.get('search'))
+    #     search=self.request.query_params.get('search')
+    #     if search:
+    #         return self.queryset.filter(Q (name__icontains=search)| Q (description__icontains=search))
+    #     # agar sorchida malumot bolsa hammasini chiqarib beradi
+    #     return self.queryset
+
+
+
+
+
+
 
     def get_serializer_class(self):
         if self.action in ('create','update'):

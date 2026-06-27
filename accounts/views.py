@@ -1,13 +1,17 @@
 
 
 from accounts import serializers
+# from accounts.jwt_utils import create_tokens
 from accounts.models import User
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import viewsets, status, permissions
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, permission_classes
 from accounts.serializers import LoginSerializer, UserSerializer, UserCreateSerializers
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
+
+from rest_framework.status import HTTP_200_OK
 
 
 # action qachon ishlatamiz qachonki get,put,patch,create,delete dan boshqa narsa yozsak ishlatiladi
@@ -23,7 +27,7 @@ class AuthViewSet(viewsets.GenericViewSet,CreateModelMixin):
             return [permissions.IsAuthenticated]
         return [permissions.AllowAny()]
 
-    @action(methods=['post'],detail=False,url_path='login',serializer_class=LoginSerializer)
+    # @action(methods=['post'],detail=False,url_path='login',serializer_class=LoginSerializer)
 # detail=False(true->aynan osha obektga kirsa,pk kere bolsa)
 #     def login_user(self,request):
 #         serializer=LoginSerializer(data=request.data)
@@ -50,5 +54,46 @@ class AuthViewSet(viewsets.GenericViewSet,CreateModelMixin):
     def get_session(self,request):
         user=request.user
         return Response(UserSerializer(user).data,status=status.HTTP_200_OK)
+#
+# class CustomJWTViewSet(viewsets.GenericViewSet):
+#     @action(methods=['post'],detail=False,serializer_class=LoginSerializer,url_path='login_jwt')
+#     def login_jwt(self,request):
+#         username=request.data.get('username')
+#         password=request.data.get('password')
+#         user=authenticate(username=username,password=password)
+#         if user:
+#             tokens=create_tokens(user.id)
+#             return Response({'tokens':tokens},status=status.HTTP_200_OK)
+#         return Response({'error':'user error'},status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(methods=['post'], detail=False, serializer_class=LoginSerializer, url_path='refresh')
+
+
+class AuthWithTokenViewSet(viewsets.GenericViewSet):
+    def get_permissions(self):
+        if self.action in ('logout_user', 'get_session'):
+            return [permissions.IsAuthenticated]
+        return [permissions.AllowAny()]
+    @action(methods=['post'],detail=False,url_path='login',serializer_class=LoginSerializer)
+    def login_user(self,request):
+        serializer=LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.validated_data.get("user")
+        key=user.token
+        return Response({"token":key})
+
+    @action(methods=['delete'],detail=False,url_path='logout')
+    def logout_user(self,request):
+        Token.objects.filter(user=request.user).delete()
+        return Response({"message":"success"})
+
+
+    @action(methods=['get'],detail=False,url_path='session',serializer_class=UserSerializer)
+    def get_session(self,request):
+        user=request.user
+        return Response(UserSerializer(user).data,status=status.HTTP_200_OK)
+
+
+
 
 
