@@ -1,9 +1,11 @@
 from asyncio import tasks
+from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.postgres import search
 
 from  django.contrib.postgres.search import TrigramSimilarity
 
 from accounts import serializers
-# from db.models import Q
+from django.db.models import Q
 # from db.models import Model
 from rest_framework import status, filters
 from  rest_framework.decorators import action
@@ -161,6 +163,23 @@ class TaskModelViewSet(ModelViewSet):
     queryset = Task.objects.all()
     # task model ichidagi hamma createlarni update qilamn
     serializer_class=TaskListSerializer
+    filter_backends = [
+        filters.SearchFilter,
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+    ]
+
+    search_fields = [
+    'name',
+    'description',
+    ]
+    filterset_fields=['status','to_user','project']
+    ordering='name'
+
+
+
+
+
 
     # filter_backends = [
     #     filters.SearchFilter
@@ -179,7 +198,15 @@ class TaskModelViewSet(ModelViewSet):
     #     # agar sorchida malumot bolsa hammasini chiqarib beradi
     #     return self.queryset
 
-
+    # def get_queryset(self):
+    #     print(self.request.query_params.get('search'))
+    #     search=self.request.query_params.get('search')
+    #     if search:
+    #         return self.queryset.annotate(similarity__name=TrigramSimilarity('name',search),
+    #                                       similarity__description=TrigramSimilarity('description',search)).filter(
+    #             Q(similarity__name__gt=0.5)|Q (similarity__dec__gt=0.5).order_by('similarity_name','-similarity_dec')
+    #         )
+    #     return self.queryset
 
 
 

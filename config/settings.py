@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t5jeryn$=u@%vh$5uiqnpj_ly(_8(3*mpu!na+(07=$xk*lu&^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # 3 rd
     'rest_framework',
     'rest_framework.authtoken',
-    # 'django_filters',
+    'django_filters',
     # 'rest_framework_simplejwt',
     # 'rest_framework_simplejwt.token_blacklist',
 
@@ -151,7 +151,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 
+'   DEFAULT_PAGINATION_CLASS':
+            'rest_framework.pagination.PageNumberPagination',
+    '   PAGE_SIZE': 10
+
 }
+
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': (
