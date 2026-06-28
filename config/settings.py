@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = {
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +48,7 @@ INSTALLED_APPS = {
     # 'rest_framework_simplejwt',
     # 'rest_framework_simplejwt.token_blacklist',
 
-}
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -143,12 +143,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
-REST_FRAMEWORK={
-    'DEFAULT_AUTHENTICATION_CLASSES':[
-        'accounts.authentication.CsrfExemptSessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+
 }
 
 # REST_FRAMEWORK = {
@@ -168,3 +170,4 @@ REST_FRAMEWORK={
 #     'ALGORITHM': 'HS256',
 #     'AUTH_HEADER_TYPES': ('Bearer',),
 # }
+

@@ -69,30 +69,36 @@ class AuthViewSet(viewsets.GenericViewSet,CreateModelMixin):
     # @action(methods=['post'], detail=False, serializer_class=LoginSerializer, url_path='refresh')
 
 
+# class AuthWithTokenViewSet(viewsets.GenericViewSet):
+
+
+from rest_framework.authtoken.models import Token
+
 class AuthWithTokenViewSet(viewsets.GenericViewSet):
+
     def get_permissions(self):
-        if self.action in ('logout_user', 'get_session'):
-            return [permissions.IsAuthenticated]
+        if self.action in ['logout', 'session']:
+            return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
-    @action(methods=['post'],detail=False,url_path='login',serializer_class=LoginSerializer)
-    def login_user(self,request):
-        serializer=LoginSerializer(data=request.data)
+
+    @action(methods=['post'], detail=False)
+    def login(self, request):
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user=serializer.validated_data.get("user")
-        key=user.token
-        return Response({"token":key})
 
-    @action(methods=['delete'],detail=False,url_path='logout')
-    def logout_user(self,request):
+        user = serializer.validated_data['user']
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return Response({"token": token.key})
+
+    @action(methods=['post'], detail=False)
+    def logout(self, request):
         Token.objects.filter(user=request.user).delete()
-        return Response({"message":"success"})
+        return Response({"message": "Logged out"})
 
-
-    @action(methods=['get'],detail=False,url_path='session',serializer_class=UserSerializer)
-    def get_session(self,request):
-        user=request.user
-        return Response(UserSerializer(user).data,status=status.HTTP_200_OK)
-
+    @action(methods=['get'], detail=False)
+    def session(self, request):
+        return Response(UserSerializer(request.user).data)
 
 
 

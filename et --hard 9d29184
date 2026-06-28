@@ -1,0 +1,8 @@
+[33m4d7f15e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD~4
+[33m9d29184[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: 4-normativ
+[33m6ab0c64[m HEAD@{2}: commit: 3-normativ drf
+[33m95600d6[m HEAD@{3}: commit: 3-normativ
+[33m19c749e[m HEAD@{4}: commit: 2-normativ drf
+[33m4d7f15e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{5}: commit: add change
+[33m61890db[m HEAD@{6}: Branch: renamed refs/heads/main to refs/heads/main
+[33m61890db[m HEAD@{8}: commit (initial): 1-2 normativ(DRF)
