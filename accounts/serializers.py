@@ -2,11 +2,12 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 from accounts.models import User
-class UserCreateSerializers(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     re_password=serializers.CharField(write_only=True)
     class Meta:
         model=User
-        fields=['username','email','first_name','last_name','password','re_password']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name','password','re_password']
+        # fields=['username','email','first_name','last_name','password','re_password']
         extra_kwargs={'password':{'write_only':True}}
     #     passwordni userga korsatmaslik uchun -> {'write_only':True}
     def validate(self, data):
@@ -25,7 +26,7 @@ class UserCreateSerializers(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'name']
+        fields = ['id', 'username']
 
 class LoginSerializer(serializers.Serializer):
     username=serializers.CharField()
@@ -37,3 +38,4 @@ class LoginSerializer(serializers.Serializer):
         if user is None:
             raise serializers.ValidationError("username yoki password xato")
         return {"user":user}
+

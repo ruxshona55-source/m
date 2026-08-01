@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import viewsets, status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, permission_classes
-from accounts.serializers import LoginSerializer, UserSerializer, UserCreateSerializers
+from accounts.serializers import LoginSerializer, UserSerializer, UserCreateSerializer
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 
@@ -18,10 +18,25 @@ from rest_framework.status import HTTP_200_OK
 
 
 
+
+
 class AuthViewSet(viewsets.GenericViewSet,CreateModelMixin):
     queryset = User.objects.all()
-    serializer_class=UserCreateSerializers
+    # serializer_class=UserCreateSerializers
     # permission_classes = [permissions.AllowAny]
+
+    @action(methods=['post'], detail=False, url_path='reg', serializer_class=UserCreateSerializer)
+    def create_user(self, request, send_email_task=None, *args, **kwargs):
+        serializer = UserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        if status.HTTP_201_CREATED:
+            send_email_task.delay(user.email, "Welcome")
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+
+
+
     def get_permissions(self):
         if self.action in ('logout_user','get_session'):
             return [permissions.IsAuthenticated]
@@ -102,4 +117,13 @@ class AuthWithTokenViewSet(viewsets.GenericViewSet):
 
 
 
+# class BackgroundTaskViewSet:
+#     @action(methods=['post'], detail=False, url_path='reg', serializer_class=UserCreateSerializer)
+#     def create_user(self, request, send_email_task=None, *args, **kwargs):
+#         serializer = UserCreateSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.save()
+#         if status.HTTP_201_CREATED:
+#             send_email_task.delay(user.email, "Welcome")
+#         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 

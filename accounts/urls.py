@@ -9,6 +9,11 @@ router=DefaultRouter()
 router.register('auth',views.AuthViewSet,basename='auth')
 
 router.register('auth-with-token',views.AuthViewSet,basename='auth-token')
+
+
+
+
+# router.register('background',BackgroundTaskViewSet,basename='background')
 #
 # urlpatterns = [
 #     path('token/', obtain_auth_token, name='api-token'),

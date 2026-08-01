@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-t5jeryn$=u@%vh$5uiqnpj_ly(_8(3*mpu!na+(07=$xk*lu&^
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 
 
@@ -40,17 +40,20 @@ INSTALLED_APPS = [
     # local
     'tasks',
     'accounts',
-    # 'drf-yasg'
     # 3 rd
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-
+    'drf_yasg',
+    'django_celery_beat',
+    'debug-toolbar',
+    
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -174,3 +177,25 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+# settings.py — Celery sozlamalari
+
+# Redis broker sifatida
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# Natijalar Redis da saqlansin
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Task boshlanganini kuzatamiz
+CELERY_TASK_TRACK_STARTED = True
+
+# Maksimal vaqt: 30 daqiqa
+CELERY_TASK_TIME_LIMIT = 1800
+
+# Toshkent vaqt zonasi
+CELERY_TIMEZONE = 'Asia/Tashkent'
+
+# REDIS_URL = "redis://localhost:6379/0"
+
+CELERY_BEAT_SCHEDULER = (
+    'django_celery_beat.schedulers.DatabaseScheduler'
+)
