@@ -33,7 +33,8 @@ class ProjectCreateAndUpdateSerializer(serializers.ModelSerializer):
         if name == description:
             raise serializers.ValidationError('Name and description cannot be same')
         return date
-
+class BackgroundTaskSerializer(serializers.Serializer):
+    task_id=serializers.UUIDField
 
     def validate_name(self,value):
         if len(value) < 3:

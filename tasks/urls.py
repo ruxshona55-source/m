@@ -8,7 +8,7 @@ router=routers.DefaultRouter()
 
 # router.register('task',views.TaskViewSet,basename='tasks')
 router.register('task',views.TaskModelViewSet,basename='task')
-
+router.register('background', views.BackgroundTaskViewSet,basename='background')
 
 urlpatterns = [
     path('projects/',views.ProjectApiView.as_view(),name='projects_list'),

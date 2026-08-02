@@ -11,14 +11,36 @@ from rest_framework import status, filters
 from  rest_framework.decorators import action
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet, GenericViewSet
 from rest_framework.views import APIView
 from tasks.models import Project, Task
-from tasks.serializers import ProjectSerializer, TaskListSerializer, TaskCreateAndUpdateSerializer
+from tasks.serializers import ProjectSerializer, TaskListSerializer, TaskCreateAndUpdateSerializer, \
+    BackgroundTaskSerializer
 from tasks.serializers import ProjectCreateAndUpdateSerializer
 from rest_framework.response import Response
 import jwt, datetime
+# views.py
+from rest_framework.response import Response
+from celery.result import AsyncResult
+from config.celery import app
+from .tasks import add
 
+class BackgroundTaskViewSet(GenericViewSet):
+    serializer_class = BackgroundTaskSerializer
+    @action(detail=False, methods=['get'])
+    def start_task(self, request):
+        a = add.delay(1, 2)  # background ga yuborish!
+        return Response({"task_id": a.id})
+
+    # Natijani tekshirish
+    @action(detail=False, methods=['post'])
+    def check_task(self, request):
+        task_id = request.data['task_id']
+        result = AsyncResult(task_id, app=app)
+
+        if result.ready():  # Tayormi?
+            return Response({"result": result.result})
+        return Response({"status": "processing..."})
 
 class ProjectApiView(APIView):
     def get(self, request):

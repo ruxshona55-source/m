@@ -22,9 +22,8 @@ from rest_framework.status import HTTP_200_OK
 
 class AuthViewSet(viewsets.GenericViewSet,CreateModelMixin):
     queryset = User.objects.all()
-    # serializer_class=UserCreateSerializers
+    serializer_class = UserSerializer
     # permission_classes = [permissions.AllowAny]
-
     @action(methods=['post'], detail=False, url_path='reg', serializer_class=UserCreateSerializer)
     def create_user(self, request, send_email_task=None, *args, **kwargs):
         serializer = UserCreateSerializer(data=request.data)
@@ -96,8 +95,8 @@ class AuthWithTokenViewSet(viewsets.GenericViewSet):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    @action(methods=['post'], detail=False)
-    def login(self, request):
+    @action(methods=['post'], detail=False, url_path='login', serializer_class=LoginSerializer)
+    def login_user(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
